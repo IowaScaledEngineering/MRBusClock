@@ -325,9 +325,7 @@ bool MRBusClock::processTimePacket(const MRBusPacket & rxpkt)
 
 	// Just straight up update real time
 	// Real time doesn't move fast enough to need dead reckoning between packets
-	realTime.hours = rxpkt.pkt[6];
-	realTime.minutes = rxpkt.pkt[7];
-	realTime.seconds = rxpkt.pkt[8];
+	realTime.setTime(rxpkt.pkt[6], rxpkt.pkt[7], rxpkt.pkt[8])
 	mrbusTimeFlags = rxpkt.pkt[9];
 	
 	// Time source packets aren't required to have a fast section
@@ -335,11 +333,15 @@ bool MRBusClock::processTimePacket(const MRBusPacket & rxpkt)
 	// there's no fast time section
 	if (rxpkt.pkt[MRBUS_PKT_LEN] >= 14)
 	{
-		fastTime.hours =  rxpkt.pkt[10];
-		fastTime.minutes =  rxpkt.pkt[11];
-		fastTime.seconds = rxpkt.pkt[12];
+		fastTime.setTime(rxpkt.pkt[10], rxpkt.pkt[11], rxpkt.pkt[12]);
 		scaleFactor = (((uint16_t)rxpkt.pkt[13])<<8) + (uint16_t)rxpkt.pkt[14];
-	}		
+	} else {
+		fastTime.init();
+		scaleFactor = 0;
+	}
+		
+	
+	
 	// If we got a packet, there's no dead reckoning time anymore
 	fastTimeDecisecs = 0;
 	scaleTenthsAccum = 0;
