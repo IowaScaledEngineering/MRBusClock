@@ -1,20 +1,23 @@
 #ifndef _MRBUSCLOCK_H_
 #define _MRBUSCLOCK_H_
 
-#include "mrbus-arduino.h"
+#include "MRBusArduino.h"
 
 class MRBusTime
 {
 	public:
 		MRBusTime();
+		void init();
+		void safe_copy(const MRBusTime & intime);
+		void addSeconds(uint8_t seconds);
 		bool setTime(uint8_t hours, uint8_t minutes, uint8_t seconds);
-		bool operator<= (const MRBusTimeData& rhv);
-		bool operator< (const MRBusTimeData& rhv);
-		bool operator>= (const MRBusTimeData& rhv);
-		bool operator> (const MRBusTimeData& rhv);
-		bool operator== (const MRBusTimeData& rhv);
-		bool operator!= (const MRBusTimeData& rhv);
-		MRBusTimeData& operator= (const MRBusTimeData& rhv);
+		bool operator<= (const MRBusTime& rhv);
+		bool operator< (const MRBusTime& rhv);
+		bool operator>= (const MRBusTime& rhv);
+		bool operator> (const MRBusTime& rhv);
+		bool operator== (const MRBusTime& rhv);
+		bool operator!= (const MRBusTime& rhv);
+		MRBusTime& operator= (const MRBusTime& rhv);
 		uint8_t seconds;
 		uint8_t minutes;
 		uint8_t hours;
@@ -30,16 +33,17 @@ class MRBusClock
 	public:
 		MRBusClock();
 		bool processTimePacket(const MRBusPacket & pkt);
-		void incrementTime(MRBusWhichTime whichTime, uint8_t incSeconds);
 		void setTimeout(uint8_t decisecs);
 		void setTimeSourceAddress(uint8_t addr);		
 		uint8_t getTimeSourceAddress();
 		bool isTimedOut();
 		bool isOnFastTime();
 		bool isOnRealTime();
-		bool isOnHold();		
-		bool getFastTime(MRBusTimeData & time);
-		bool getRealTime(MRBusTimeData & time);
+		bool isOnHold();	
+		bool isRealIn12HDisplay();
+		bool isFastIn12HDisplay();
+		bool getFastTime(MRBusTime & time);
+		bool getRealTime(MRBusTime & time);
 		
 		
 	private:
